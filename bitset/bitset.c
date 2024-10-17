@@ -504,3 +504,326 @@ char* bitset_to_string(const Bitset* bs) {
     return str;
 }
 
+/**
+ * @brief Performs bitwise AND operation on two Bitsets.
+ *
+ * Takes two Bitsets and returns a new Bitset that is the result of the AND operation.
+ * The sizes of the Bitsets must be the same for the operation to be valid.
+ *
+ * @param bs1 The first Bitset.
+ * @param bs2 The second Bitset.
+ * @return Pointer to the resulting Bitset after the AND operation, or NULL if the sizes are not compatible.
+ */
+Bitset* bitset_and(const Bitset* bs1, const Bitset* bs2) {
+    BITSET_LOG("[bitset_and]: Function start.");
+    if (bs1->size != bs2->size) {
+        BITSET_LOG("[bitset_and]: Error - Bitsets have different sizes.");
+        return NULL;
+    }
+
+    Bitset* result = bitset_create(bs1->size);
+    if (!result) {
+        BITSET_LOG("[bitset_and]: Error - Memory allocation failed for result Bitset.");
+        return NULL;
+    }
+
+    // Perform bitwise AND for each byte in the bit array
+    size_t num_bytes = (bs1->size + 7) / 8; // Calculate the number of bytes
+    for (size_t i = 0; i < num_bytes; ++i) {
+        result->bits[i] = bs1->bits[i] & bs2->bits[i];
+        BITSET_LOG("[bitset_and]: Byte %zu - Result: 0x%x", i, result->bits[i]);
+    }
+
+    BITSET_LOG("[bitset_and]: Bitwise AND operation completed successfully.");
+    return result;
+}
+
+/**
+ * @brief Performs bitwise OR operation on two Bitsets.
+ *
+ * Takes two Bitsets and returns a new Bitset that is the result of the OR operation.
+ * The sizes of the Bitsets must be the same for the operation to be valid.
+ *
+ * @param bs1 The first Bitset.
+ * @param bs2 The second Bitset.
+ * @return Pointer to the resulting Bitset after the OR operation, or NULL if the sizes are not compatible.
+ */
+Bitset* bitset_or(const Bitset* bs1, const Bitset* bs2) {
+    BITSET_LOG("[bitset_or]: Function start.");
+    if (bs1->size != bs2->size) {
+        BITSET_LOG("[bitset_or]: Error - Bitsets have different sizes.");
+        return NULL;
+    }
+
+    Bitset* result = bitset_create(bs1->size);
+    if (!result) {
+        BITSET_LOG("[bitset_or]: Error - Memory allocation failed for result Bitset.");
+        return NULL;
+    }
+
+    // Perform bitwise OR for each byte in the bit array
+    size_t num_bytes = (bs1->size + 7) / 8; // Calculate the number of bytes
+    for (size_t i = 0; i < num_bytes; ++i) {
+        result->bits[i] = bs1->bits[i] | bs2->bits[i];
+        BITSET_LOG("[bitset_or]: Byte %zu - Result: 0x%x", i, result->bits[i]);
+    }
+
+    BITSET_LOG("[bitset_or]: Bitwise OR operation completed successfully.");
+    return result;
+}
+
+/**
+ * @brief Performs bitwise XOR operation on two Bitsets.
+ *
+ * Takes two Bitsets and returns a new Bitset that is the result of the XOR operation.
+ * The sizes of the Bitsets must be the same for the operation to be valid.
+ *
+ * @param bs1 The first Bitset.
+ * @param bs2 The second Bitset.
+ * @return Pointer to the resulting Bitset after the XOR operation, or NULL if the sizes are not compatible.
+ */
+Bitset* bitset_xor(const Bitset* bs1, const Bitset* bs2) {
+    BITSET_LOG("[bitset_xor]: Function start.");
+    if (bs1->size != bs2->size) {
+        BITSET_LOG("[bitset_xor]: Error - Bitsets have different sizes.");
+        return NULL;
+    }
+
+    Bitset* result = bitset_create(bs1->size);
+    if (!result) {
+        BITSET_LOG("[bitset_xor]: Error - Memory allocation failed for result Bitset.");
+        return NULL;
+    }
+
+    // Perform bitwise XOR for each byte in the bit array
+    size_t num_bytes = (bs1->size + 7) / 8; 
+    for (size_t i = 0; i < num_bytes; ++i) {
+        result->bits[i] = bs1->bits[i] ^ bs2->bits[i];
+        BITSET_LOG("[bitset_xor]: Byte %zu - Result: 0x%x", i, result->bits[i]);
+    }
+
+    BITSET_LOG("[bitset_xor]: Bitwise XOR operation completed successfully.");
+    return result;
+}
+
+/**
+ * @brief Performs bitwise NOT operation on a Bitset.
+ *
+ * Creates a new Bitset that is the result of flipping all bits in the given Bitset.
+ *
+ * @param bs The Bitset to flip.
+ * @return Pointer to the resulting Bitset after the NOT operation, or NULL if the input is NULL.
+ */
+Bitset* bitset_not(const Bitset* bs) {
+    BITSET_LOG("[bitset_not]: Function start.");
+    if (!bs) {
+        BITSET_LOG("[bitset_not]: Error - Null pointer provided.");
+        return NULL;
+    }
+
+    Bitset* result = bitset_create(bs->size);
+    if (!result) {
+        BITSET_LOG("[bitset_not]: Error - Memory allocation failed for result Bitset.");
+        return NULL;
+    }
+
+    size_t num_bytes = (bs->size + 7) / 8; 
+    for (size_t i = 0; i < num_bytes; ++i) {
+        result->bits[i] = ~bs->bits[i];
+        BITSET_LOG("[bitset_not]: Byte %zu - Result: 0x%x", i, result->bits[i]);
+    }
+
+    // Clear any bits beyond the actual size of the bitset (if the size is not a multiple of 8)
+    size_t extra_bits = (num_bytes * 8) - bs->size;
+    if (extra_bits > 0) {
+        result->bits[num_bytes - 1] &= (1 << (8 - extra_bits)) - 1;
+        BITSET_LOG("[bitset_not]: Cleared extra bits beyond the size of the bitset.");
+    }
+
+    BITSET_LOG("[bitset_not]: Bitwise NOT operation completed successfully.");
+    return result;
+}
+
+/**
+ * @brief Shifts the bits in the Bitset to the left by the specified number of positions.
+ *
+ * This function shifts all bits to the left by the given number of positions, filling the rightmost bits with zeros.
+ *
+ * @param bs The Bitset to be shifted.
+ * @param shift The number of positions to shift the bits to the left.
+ * @return Pointer to the modified Bitset (bs).
+ */
+Bitset* bitset_shift_left(const Bitset* bs, size_t shift) {
+    BITSET_LOG("[bitset_shift_left]: Function start.");
+    if (!bs) {
+        BITSET_LOG("[bitset_shift_left]: Error - Null pointer provided.");
+        return NULL;
+    }
+    if (shift >= bs->size) {
+        // If the shift is larger than or equal to the size of the bitset, create a new bitset filled with zeros
+        Bitset* result = bitset_create(bs->size);
+        memset(result->bits, 0, (bs->size + 7) / 8);
+        BITSET_LOG("[bitset_shift_left]: Shift greater than or equal to bitset size. Bitset filled with zeros.");
+        return result;
+    }
+
+    Bitset* result = bitset_create(bs->size); 
+    size_t num_bytes = (bs->size + 7) / 8; // Number of bytes in the bit array
+
+    // Shift each byte in the bit array
+    for (size_t i = 0; i < num_bytes; ++i) {
+        result->bits[i] = (bs->bits[i] << shift) | (i + 1 < num_bytes ? (bs->bits[i + 1] >> (8 - shift)) : 0);
+        BITSET_LOG("[bitset_shift_left]: Byte %zu shifted. New value: 0x%x", i, result->bits[i]);
+    }
+
+    // Clear any bits that may have been shifted out of range
+    size_t extra_bits = bs->size % 8;
+    if (extra_bits != 0) {
+        result->bits[num_bytes - 1] &= (1 << extra_bits) - 1;
+    }
+
+    BITSET_LOG("[bitset_shift_left]: Bitset shifted left successfully.");
+    return result;
+}
+
+/**
+ * @brief Shifts the bits in the Bitset to the right by the specified number of positions.
+ *
+ * This function shifts all bits to the right by the given number of positions, filling the leftmost bits with zeros.
+ *
+ * @param bs The Bitset to be shifted.
+ * @param shift The number of positions to shift the bits to the right.
+ * @return Pointer to the modified Bitset (bs).
+ */
+Bitset* bitset_shift_right(const Bitset* bs, size_t shift) {
+    BITSET_LOG("[bitset_shift_right]: Function start.");
+    if (!bs) {
+        BITSET_LOG("[bitset_shift_right]: Error - Null pointer provided.");
+        return NULL;
+    }
+    if (shift >= bs->size) {
+        // If the shift is larger than or equal to the size of the bitset, create a new bitset filled with zeros
+        Bitset* result = bitset_create(bs->size);
+        memset(result->bits, 0, (bs->size + 7) / 8);
+        BITSET_LOG("[bitset_shift_right]: Shift greater than or equal to bitset size. Bitset filled with zeros.");
+        return result;
+    }
+
+    Bitset* result = bitset_create(bs->size); 
+    size_t num_bytes = (bs->size + 7) / 8; // Number of bytes in the bit array
+
+    for (size_t i = num_bytes; i-- > 0;) {
+        result->bits[i] = (bs->bits[i] >> shift) | (i > 0 ? (bs->bits[i - 1] << (8 - shift)) : 0);
+        BITSET_LOG("[bitset_shift_right]: Byte %zu shifted. New value: 0x%x", i, result->bits[i]);
+    }
+
+    BITSET_LOG("[bitset_shift_right]: Bitset shifted right successfully.");
+    return result;
+}
+
+/**
+ * @brief Compares two Bitsets for equality.
+ *
+ * This function checks if two Bitsets are identical in size and bit values. 
+ * It returns true if the Bitsets are equal and false otherwise.
+ *
+ * @param bs1 The first Bitset to compare.
+ * @param bs2 The second Bitset to compare.
+ * @return true if the Bitsets are equal, false otherwise.
+ */
+bool bitset_is_equal(const Bitset* bs1, const Bitset* bs2) {
+    BITSET_LOG("[bitset_is_equal]: Function start.");
+    if (!bs1 || !bs2) {
+        BITSET_LOG("[bitset_is_equal]: Error - Null pointer provided.");
+        return false;
+    }
+    if (bs1->size != bs2->size) {
+        BITSET_LOG("[bitset_is_equal]: Bitsets have different sizes.");
+        return false;
+    }
+
+    size_t num_bytes = (bs1->size + 7) / 8;
+    for (size_t i = 0; i < num_bytes; ++i) {
+        if (bs1->bits[i] != bs2->bits[i]) {
+            BITSET_LOG("[bitset_is_equal]: Bitsets differ at byte %zu.", i);
+            return false;
+        }
+    }
+
+    BITSET_LOG("[bitset_is_equal]: Bitsets are equal.");
+    return true;
+}
+
+/**
+ * @brief Compares two Bitsets for inequality.
+ *
+ * This function checks if two Bitsets are different in size or bit values. 
+ * It returns true if the Bitsets are not equal and false otherwise.
+ *
+ * @param bs1 The first Bitset to compare.
+ * @param bs2 The second Bitset to compare.
+ * @return true if the Bitsets are not equal, false otherwise.
+ */
+bool bitset_is_not_equal(const Bitset* bs1, const Bitset* bs2) {
+    BITSET_LOG("[bitset_is_not_equal]: Function start.");
+    return !bitset_is_equal(bs1, bs2);
+}
+
+/**
+ * @brief Returns the value of the bit at the given position.
+ *
+ * This function returns the value of the bit at the specified position.
+ * It mimics the behavior of `std::bitset::operator[]` in C++.
+ *
+ * @param bs The Bitset to access.
+ * @param pos The position of the bit to access.
+ * @return The value of the bit at the specified position (true if set, false if not).
+ */
+bool bitset_at(const Bitset* bs, size_t pos) {
+    BITSET_LOG("[bitset_at]: Function start.");
+
+    if (!bs) {
+        BITSET_LOG("[bitset_at]: Error - Null pointer provided.");
+        return false;
+    }
+    if (pos >= bs->size) {
+        BITSET_LOG("[bitset_at]: Error - Position out of bounds.");
+        return false; 
+    }
+
+    size_t byte_index = pos / 8;
+    size_t bit_index = pos % 8;
+
+    bool result = (bs->bits[byte_index] & (1 << bit_index)) != 0;
+    BITSET_LOG("[bitset_at]: Bit at position %zu is %d.", pos, result);
+
+    return result;
+}
+
+/**
+ * @brief Returns a reference (pointer) to the bit at the given position for modification.
+ *
+ * This function allows modification of the bit at the specified position.
+ * The user can set the bit using the returned pointer (mimics the non-const version of `std::bitset::operator[]` in C++).
+ *
+ * @param bs The Bitset to modify.
+ * @param pos The position of the bit to modify.
+ * @return Pointer to the byte that contains the bit, shifted to the correct bit position.
+ */
+unsigned char* bitset_at_ref(Bitset* bs, size_t pos) {
+    BITSET_LOG("[bitset_at_ref]: Function start.");
+
+    if (!bs) {
+        BITSET_LOG("[bitset_at_ref]: Error - Null pointer provided.");
+        return NULL;
+    }
+    if (pos >= bs->size) {
+        BITSET_LOG("[bitset_at_ref]: Error - Position out of bounds.");
+        return NULL; 
+    }
+
+    size_t byte_index = pos / 8;
+
+    BITSET_LOG("[bitset_at_ref]: Returning reference to bit at position %zu.", pos);
+    return &bs->bits[byte_index];
+}

@@ -98,7 +98,7 @@ if (WIN32)
         # stack
         # secrets
         # span
-        # queue
+        queue
         # priority_queue
         # algorithm
         # array
@@ -106,7 +106,7 @@ if (WIN32)
         # cli
         # deque
         # json
-        matrix
+        # matrix
         # fileio
         # crypto
         # config

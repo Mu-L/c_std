@@ -1,29 +1,32 @@
-#include "matrix/matrix.h"
 #include "fmt/fmt.h"
+#include "queue/queue.h"
 
 int main() {
-    double f[] = {0.1, 2.0, 1.0, 0.1}; // Fecundity coefficients
-    double s[] = {0.2, 0.8, 0.7};      // Survival coefficients
-    size_t f_size = sizeof(f) / sizeof(f[0]);
-    size_t s_size = sizeof(s) / sizeof(s[0]);
-
-    Matrix* fl = matrix_from_array(f, 1, 3);
-    Matrix* sl = matrix_from_array(s, 1, 3);
+    Queue* myQueue1 = queue_create(sizeof(int));
+    Queue* myQueue2 = queue_create(sizeof(int));
+    int values1[] = {10, 20, 30, 40, 50};
     
-    if (!fl || !sl) {
-        fmt_fprintf(stderr, "Error: can not create Matrix from array fl or sl or both of them");
-        return -1;
+    for (int i = 0; i < 5; ++i) {
+        queue_push(myQueue1, &values1[i]);
     }
 
-    Matrix* leslieMatrix = matrix_leslie(fl, f_size, sl, s_size);
-    if (leslieMatrix) {
-        fmt_printf("Leslie Matrix:\n");
-        matrix_print(leslieMatrix);
-        matrix_deallocate(leslieMatrix);
-
+    int values2[] = {15, 25, 35, 45, 55};
+    for (int i = 0; i < 5; ++i) { 
+        queue_emplace(myQueue2, &values2[i], sizeof(int));
     }
 
-    matrix_deallocate(fl);
-    matrix_deallocate(sl);
+    queue_swap(myQueue1, myQueue2);
+
+    int* front1 = queue_front(myQueue1);
+    int* front2 = queue_front(myQueue2);
+
+    if (front1 && front2) {
+        fmt_printf("Front element of myQueue1 after swap: %d\n", *front1);
+        fmt_printf("Front element of myQueue2 after swap: %d\n", *front2);
+    }
+
+    queue_deallocate(myQueue1);
+    queue_deallocate(myQueue2);
+
     return 0;
 }

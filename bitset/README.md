@@ -32,25 +32,43 @@ in these examples i rewrite cpp example in Bitset code
 ```
 ## Function Descriptions
 
-- `bitset_create(size_t num_bits)`: Creates a new bitset with the specified number of bits.
-- `bitset_deallocate(Bitset *bs)`: Frees the memory allocated for the bitset.
-- `bitset_print(const Bitset* bs)`: Prints the entire bitset to the standard output.
-- `bitset_set_from_string(Bitset* bs, const char* str)`: Sets the bitset's bits based on a string of '0's and '1's.
-- `bitset_test(const Bitset *bs, size_t pos)`: Tests whether the bit at the specified position in the bitset is set (1) or not (0).
-- `bitset_set(Bitset* bs, size_t pos, bool value)`: Sets or clears the bit at the specified position in the bitset.
-- `bitset_reset(Bitset* bs, size_t pos)`: Clears (sets to 0) the bit at the specified position in the bitset.
-- `bitset_flip(Bitset* bs, size_t pos)`: Toggles (flips) the bit at the specified position in the bitset.
-- `bitset_flip_all(Bitset* bs)`: Toggles (flips) all bits in the bitset.
-- `bitset_all(const Bitset* bs)`: Checks if all bits in the bitset are set (1).
-- `bitset_any(const Bitset* bs)`: Checks if any bit in the bitset is set (1).
-- `bitset_none(const Bitset* bs)`: Checks if no bits in the bitset are set (1).
-- `bitset_count(const Bitset* bs)`: Returns the number of bits that are set (1) in the bitset.
-- `bitset_size(const Bitset* bs)`: Returns the size (number of bits) of the bitset.
-- `bitset_to_ulong(const Bitset* bs)`: Converts the bitset to an `unsigned long` value, assuming the bitset 
-represents a binary number.
 
-- `bitset_to_ullong(const Bitset* bs)`: Converts the bitset to an `unsigned long long` value, assuming the bitset represents a binary number.
-- `bitset_to_string` : This function will convert the bitset to a string representation.
+- `void bitset_deallocate(Bitset *bs)`: Frees the memory allocated for the bitset.
+- `void bitset_print(const Bitset* bs)`: Prints the entire bitset to the standard output.
+- `void bitset_set_from_string(Bitset* bs, const char* str)`: Sets the bitset's bits based on a string of '0's and '1's.
+
+ (0).
+- `Bitset* bitset_create(size_t num_bits)`: Creates a new bitset with the specified number of bits.
+- `Bitset* bitset_set(Bitset* bs, size_t pos, bool value)`: Sets or clears the bit at the specified position in the bitset.
+- `Bitset* bitset_reset(Bitset* bs, size_t pos)`: Clears (sets to 0) the bit at the specified position in the bitset.
+- `Bitset* bitset_flip(Bitset* bs, size_t pos)`: Toggles (flips) the bit at the specified position in the bitset.
+- `Bitset* bitset_flip_all(Bitset* bs)`: Toggles (flips) all bits in the bitset.
+- `Bitset* bitset_and(const Bitset* bs1, const Bitset* bs2)` : Takes two Bitsets and returns a new Bitset that is the result of the AND operation.
+- `Bitset* bitset_or(const Bitset* bs1, const Bitset* bs2)` : Takes two Bitsets and returns a new Bitset that is the result of the OR operation.
+- `Bitset* bitset_xor(const Bitset* bs1, const Bitset* bs2)` : Takes two Bitsets and returns a new Bitset that is the result of the XOR operation.
+- `Bitset* bitset_not(const Bitset* bs)` : Creates a new Bitset that is the result of flipping all bits in the given Bitset.
+- `Bitset* bitset_shift_right(const Bitset* bs, size_t shift)` : This function shifts all bits to the left by the given number of positions, filling the rightmost bits with zeros.
+- `Bitset* bitset_shift_left(const Bitset* bs, size_t shift)` : This function shifts all bits to the right by the given number of positions, filling the leftmost bits with zeros.
+
+- `bool bitset_all(const Bitset* bs)`: Checks if all bits in the bitset are set (1).
+- `bool bitset_any(const Bitset* bs)`: Checks if any bit in the bitset is set (1).
+- `bool bitset_none(const Bitset* bs)`: Checks if no bits in the bitset are set (1).
+- `bool bitset_test(const Bitset *bs, size_t pos)`: Tests whether the bit at the specified position in the bitset is set (1) or not
+- `bool bitset_is_equal(const Bitset* bs1, const Bitset* bs2)` : This function checks if two Bitsets are identical in size and bit values. 
+- `bool bitset_is_not_equal(const Bitset* bs1, const Bitset* bs2)` : This function checks if two Bitsets are different in size or bit values. 
+- `bool bitset_at(const Bitset* bs, size_t pos)` : This function returns the value of the bit at the specified position.
+
+- `size_t bitset_count(const Bitset* bs)`: Returns the number of bits that are set (1) in the bitset.
+- `size_t bitset_size(const Bitset* bs)`: Returns the size (number of bits) of the bitset.
+
+- `unsigned long bitset_to_ulong(const Bitset* bs)`: Converts the bitset to an `unsigned long` value, assuming the bitset 
+represents a binary number.
+- `unsigned char* bitset_at_ref(Bitset* bs, size_t pos)` : This function allows modification of the bit at the specified position.
+- `unsigned long long bitset_to_ullong(const Bitset* bs)`: Converts the bitset to an `unsigned long long` value, assuming the bitset represents a binary number.
+
+- `char* bitset_to_string` : This function will convert the bitset to a string representation.
+
+
 
 ## Example 1 : how to use `bitset_none` and `bitset_count`
 
@@ -88,13 +106,7 @@ Please, enter a binary number: 11010111
 #define MAX_INPUT_SIZE 16 // Define the maximum input size
 
 int main() {
-    // Create a Bitset with 16 bits
     Bitset* foo = bitset_create(16);
-    if (!foo) {
-        fprintf(stderr, "Failed to create bitset\n");
-        return 1;
-    }
-
     char input[MAX_INPUT_SIZE + 1]; // +1 for the null terminator
     
     fmt_printf("Please, enter a binary number: ");
@@ -134,9 +146,6 @@ int main(){
     Bitset* bi1 = bitset_create(4);
     Bitset* bi2 = bitset_create(8);
 
-    if (!bi1 || !bi2) {
-        return -1;
-    }
     bitset_set_from_string(bi1, "0001");
 
     fmt_printf("%llu\n", bitset_to_ullong(bi2));
@@ -168,12 +177,6 @@ int main(){
 
 int main() {
     Bitset* foo = bitset_create(8);
-
-    if (!foo){
-        fprintf(stderr, "Failed to create bitset\n");
-        return 1;
-    }
-
     char input[9]; // 8 bits + null terminator
     
     fmt_printf("Please, enter an 8-bit binary number: ");
@@ -296,13 +299,7 @@ Please, enter a binary number: 10110
 #include "bitset/bitset.h" 
 
 int main() {
-    // Create a Bitset with 8 bits
     Bitset* foo = bitset_create(8);
-
-    if (!foo) {
-        fprintf(stderr, "Failed to create bitset\n");
-        return 1;
-    }
 
     // // Manually set the bits to match "10110011"
     bitset_set(foo, 0, true);  // MSB
@@ -778,4 +775,413 @@ int main() {
 ```
 Original Bitset: 10011001
 Shifted Left by 2: 01100100
+```
+
+## Example 14 : how to use `and operator` in Bitset with `bitset_and`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* b1 = bitset_create(4);
+    Bitset* b2 = bitset_create(4);
+
+    bitset_set_from_string(b1, "0110");
+    bitset_set_from_string(b2, "0011");
+
+    Bitset* result = bitset_and(b1, b2);
+    fmt_printf("b1 & b2: ");
+    bitset_print(result);
+
+    bitset_deallocate(result); 
+    bitset_deallocate(b1);
+    bitset_deallocate(b2);
+
+    return 0;
+}
+```
+
+**Result**
+```
+b1 & b2: 0010
+```
+
+**C++ Implementation:**
+
+```c++
+#include <iostream>
+#include <bitset>
+
+int main() {
+    std::bitset<4> b1("0110");
+    std::bitset<4> b2("0011");
+
+    std::cout << "b1 & b2: " << (b1 & b2) << '\n';
+
+    return 0;
+}
+
+```
+
+**Result in C++:**
+```
+b1 & b2: 0010
+```
+
+## Example 15 : how to use `or operator` in Bitset with `bitset_or`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* b1 = bitset_create(4);
+    Bitset* b2 = bitset_create(4);
+
+    bitset_set_from_string(b1, "0110");
+    bitset_set_from_string(b2, "0011");
+
+    Bitset* result = bitset_or(b1, b2);
+
+    fmt_printf("b1 | b2: ");
+    bitset_print(result);
+
+    bitset_deallocate(result); 
+    bitset_deallocate(b1);
+    bitset_deallocate(b2);
+
+    return 0;
+}
+```
+
+**C++ Implementation:**
+
+```c++ 
+#include <bitset>
+#include <iostream>
+ 
+int main() {
+    std::bitset<4> b1("0110");
+    std::bitset<4> b2("0011");
+ 
+    std::cout << "b1 | b2: " << (b1 | b2) << '\n';
+
+    return 0;
+}
+```
+
+**Result C++**
+```
+b1 | b2: 0111
+```
+
+## Example 16 : how to use `xor operator` in Bitset with `bitset_xor`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* b1 = bitset_create(4);
+    Bitset* b2 = bitset_create(4);
+
+    bitset_set_from_string(b1, "0110");
+    bitset_set_from_string(b2, "0011");
+
+    Bitset* result = bitset_xor(b1, b2);
+    fmt_printf("b1 ^ b2: ");
+    bitset_print(result);
+
+    bitset_deallocate(result); 
+    bitset_deallocate(b1);
+    bitset_deallocate(b2);
+
+    return 0;
+}
+```
+
+**Result**
+```
+b1 ^ b2: 0101
+```
+
+**C++ Implementation:**
+
+```c++ 
+#include <bitset>
+#include <iostream>
+ 
+int main() {
+    std::bitset<4> b1("0110");
+    std::bitset<4> b2("0011");
+ 
+    std::cout << "b1 ^ b2: " << (b1 | b2) << '\n';
+
+    return 0;
+}
+```
+
+**Result C++**
+```
+b1 ^ b2: 0101
+```
+
+## Example 17 : not operator in bitset `bitset_not`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* b1 = bitset_create(16);
+
+    bitset_set_from_string(b1, "10011001");
+    Bitset* result = bitset_not(b1);
+
+    fmt_printf("Original bitset: ");
+    bitset_print(b1);
+
+    fmt_printf("~Original bitset: ");
+    bitset_print(result);
+
+    bitset_deallocate(result); 
+    bitset_deallocate(b1);
+    return 0;
+}
+```
+
+**Result c_std**
+```
+Original bitset: 0000000010011001
+~Original bitset: 1111111101100110
+```
+
+**C++ Implementation**
+
+```c++
+#include <iostream>
+#include <bitset>
+
+int main() {
+    std::bitset<16> pattern{"10011001"};
+    
+    std::cout << "Original bitset : " << pattern << std::endl;
+    std::cout << "~Original bitset : " << ~pattern << std::endl;
+
+    return 0;
+}
+```
+
+**Result C++**
+```
+Original bitset: 0000000010011001
+~Original bitset: 1111111101100110
+```
+
+## Example 18 : `shift_to_left` and `shift_to_right`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* bs = bitset_create(8);
+    bitset_set_from_string(bs, "11010010");
+
+    fmt_printf("Original Bitset: ");
+    bitset_print(bs);
+
+    Bitset* left_shifted = bitset_shift_left(bs, 2);
+    fmt_printf("After left_shift by 2: ");
+    bitset_print(left_shifted);
+
+    Bitset* right_shift = bitset_shift_right(bs, 3);
+    fmt_printf("After right_shift by 3: ");
+    bitset_print(right_shift);
+
+    bitset_deallocate(bs);
+    bitset_deallocate(right_shift);
+    bitset_deallocate(left_shifted);
+    
+    return 0;
+}
+```
+
+**Result c_std:**
+```
+Original Bitset: 11010010
+After left_shift by 2: 01001000
+After right_shift by 3: 00011010
+```
+
+**C++ Implementation:**
+
+```c++
+int main() {
+    std::bitset<8> bs("11010010");
+    std::cout << "Original Bitset: " << bs << std::endl;
+
+    std::bitset<8> left_shifted = bs << 2;
+    std::cout << "After left shift by 2: " << left_shifted << std::endl;
+
+    std::bitset<8> right_shifted = bs >> 3;
+    std::cout << "After right shift by 3: " << right_shifted << std::endl;
+
+    return 0;
+}
+```
+
+**C++ Result**
+```
+Original Bitset: 11010010
+After left_shift by 2: 01001000
+After right_shift by 3: 00011010
+```
+
+## Example 19 : check Bitset object are equal or not `bitset_is_equal` and `bitset_is_not_equal`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* bs1 = bitset_create(8);
+    Bitset* bs2 = bitset_create(8);
+
+    bitset_set_from_string(bs1, "11010010");
+    bitset_set_from_string(bs2, "11010010");
+
+    if (bitset_is_equal(bs1, bs2)) {
+        fmt_printf("bs1 and bs2 are equal.\n");
+    } 
+    else {
+        fmt_printf("bs1 and bs2 are not equal.\n");
+    }
+
+    bitset_set_from_string(bs2, "01010101");
+
+    if (bitset_is_not_equal(bs1, bs2)) {
+        fmt_printf("After modification, bs1 and bs2 are not equal.\n");
+    }
+
+    bitset_deallocate(bs1);
+    bitset_deallocate(bs2);
+
+    return 0;
+}
+```
+
+**Result c_std:**
+
+```
+bs1 and bs2 are equal.
+After modification, bs1 and bs2 are not equal.
+```
+
+**C++ Implementation**
+
+```c++
+#include <bitset>
+#include <iostream>
+
+int main() {
+    std::bitset<8> bs1("11010010");
+    std::bitset<8> bs2("11010010");
+
+    if (bs1 == bs2) {
+        std::cout << "bs1 and bs2 are equal." << std::endl;
+    } 
+    else {
+        std::cout << "bs1 and bs2 are not equal." << std::endl;
+    }
+
+    bs2 = std::bitset<8>("01010101");
+
+    if (bs1 != bs2) {
+        std::cout << "After modification, bs1 and bs2 are not equal." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+**Result C++:**
+
+```
+bs1 and bs2 are equal.
+After modification, bs1 and bs2 are not equal.
+```
+
+## Example 20 : access bit positions with `bitset_at` or modify value of positions `bitset_at_ref`
+
+```c
+#include "bitset/bitset.h"
+#include "fmt/fmt.h"
+
+int main() {
+    Bitset* bs = bitset_create(8);
+    bitset_set_from_string(bs, "00101010");
+
+    for (size_t i = 0; i < bitset_size(bs); ++i) {
+        fmt_printf("bs[%zu]: %d\n", i, bitset_at(bs, i));
+    }
+
+    unsigned char* ref = bitset_at_ref(bs, 0);
+    if (ref) {
+        *ref |= 1 << 0; // Set the 0th bit to 1
+    }
+
+    fmt_printf("After setting bit 0, Bitset holds: ");
+    bitset_print(bs);
+
+    bitset_deallocate(bs);
+    return 0;
+}
+```
+
+**Result c_std:**
+
+```
+bs[0]: 0
+bs[1]: 1
+bs[2]: 0
+bs[3]: 1
+bs[4]: 0
+bs[5]: 1
+bs[6]: 0
+bs[7]: 0
+After setting bit 0, Bitset holds: 00101011
+```
+
+**C++ Implementation**
+
+```c++
+#include <bitset>
+#include <cstddef>
+#include <iostream>
+ 
+int main() {
+    std::bitset<8> b1{0b00101010};
+ 
+    for (std::size_t i = 0; i < b1.size(); ++i)
+        std::cout << "b1[" << i << "]: " << b1[i] << '\n';
+    b1[0] = true; // modifies the first bit through bitset::reference
+ 
+    std::cout << "After setting bit 0, b1 holds " << b1 << '\n';
+}
+```
+
+**C++ Result**
+
+```
+b1[0]: 0
+b1[1]: 1
+b1[2]: 0
+b1[3]: 1
+b1[4]: 0
+b1[5]: 1
+b1[6]: 0
+b1[7]: 0
+After setting bit 0, b1 holds 00101011
 ```

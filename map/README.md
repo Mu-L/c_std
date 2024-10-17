@@ -6,7 +6,7 @@
 
 ## Overview
 
-The Map library provides a generic implementation of a map (also known as an associative array) in C. This map is implemented as a Red-Black Tree, which is a type of self-balancing binary search tree. This ensures efficient operations like insertion, deletion, and lookup, all with a time complexity of O(log n).
+The Map library provides a generic implementation of a map (also known as an associative array). This map is implemented as a Red-Black Tree, which is a type of self-balancing binary search tree. This ensures efficient operations like insertion, deletion, and lookup, all with a time complexity of O(log n).
 
 ## Features
 
@@ -397,7 +397,7 @@ int main() {
 
 ```c
 #include "map/map.h"
-#include <stdio.h>
+#include "fmt/fmt.h"
 #include <stdlib.h>
 
 int compare_doubles(const KeyType a, const KeyType b) {
@@ -406,9 +406,11 @@ int compare_doubles(const KeyType a, const KeyType b) {
 
     if (*da < *db) {
         return -1;
-    } else if (*da > *db) { 
+    } 
+    else if (*da > *db) { 
         return 1;
-    } else {
+    } 
+    else {
         return 0;
     }
 }
