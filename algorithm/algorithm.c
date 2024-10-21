@@ -1,3 +1,9 @@
+/**
+ * @author Amin Tahmasebi
+ * @date 2023
+ * @class Algorithm
+*/
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -1963,4 +1969,181 @@ void algorithm_replace_if(void *base, size_t num, size_t size, const void *new_v
     }
 
     ALGORITHM_LOG("[algorithm_replace_if] Success: Replaced %zu elements.", replace_count);
+}
+
+/**
+ * @brief Returns a pointer to the first element of an array.
+ *
+ * @param base Pointer to the start of the array.
+ * @return Pointer to the first element of the array.
+ */
+void* algorithm_begin(void* base) {
+    ALGORITHM_LOG("[algorithm_begin] Info: Returning pointer to the first element.");
+    return base;
+}
+
+/**
+ * @brief Returns a pointer to one past the last element of an array.
+ *
+ * @param base Pointer to the start of the array.
+ * @param num Number of elements in the array.
+ * @param size Size of each element in bytes.
+ * @return Pointer to one past the last element of the array.
+ */
+void* algorithm_end(void* base, size_t num, size_t size) {
+    ALGORITHM_LOG("[algorithm_end] Info: Returning pointer to one past the last element.");
+    return (char*)base + num * size;
+}
+
+/**
+ * @brief Fills a range with successive values, starting from the given value.
+ *
+ * This function assigns successive values to the range `[first, last)`, starting from the value `val`
+ * and incrementing it for each element. It works for integers, characters, floating-point, and several other types.
+ *
+ * @param first Pointer to the start of the range.
+ * @param last Pointer to one past the end of the range.
+ * @param val Pointer to the initial value to assign to the first element.
+ * @param size Size of each element in bytes.
+ * @param type The type of the data being processed (specified as DataType).
+ */
+void algorithm_iota(void* first, void* last, void* val, size_t size, DataType type) {
+    char* ptr = (char*)first;
+
+    switch (type) {
+        case TYPE_INT: {
+            ALGORITHM_LOG("Handling int\n");
+            int current = *(int*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_CHAR: {
+            ALGORITHM_LOG("Handling char\n");
+            char current = *(char*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_FLOAT: {
+            ALGORITHM_LOG("Handling float\n");
+            float current = *(float*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1.0f;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_DOUBLE: {
+            ALGORITHM_LOG("Handling double\n");
+            double current = *(double*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1.0;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_SHORT: {
+            ALGORITHM_LOG("Handling short\n");
+            short current = *(short*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_LONG: {
+            ALGORITHM_LOG("Handling long\n");
+            long current = *(long*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_LONG_LONG: {
+            ALGORITHM_LOG("Handling long long\n");
+            long long current = *(long long*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_UNSIGNED_LONG: {
+            ALGORITHM_LOG("Handling unsigned long\n");
+            unsigned long current = *(unsigned long*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_UNSIGNED_CHAR: {
+            ALGORITHM_LOG("Handling unsigned char\n");
+            unsigned char current = *(unsigned char*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_UNSIGNED_LONG_LONG: {
+            ALGORITHM_LOG("Handling unsigned long long\n");
+            unsigned long long current = *(unsigned long long*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_LONG_DOUBLE: {
+            ALGORITHM_LOG("Handling long double\n");
+            long double current = *(long double*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1.0;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_UNSIGNED_INT: {
+            ALGORITHM_LOG("Handling unsignedint\n");
+            unsigned int current = *(unsigned int*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        case TYPE_UNSIGNED_SHORT: {
+            ALGORITHM_LOG("Handling unsigned short\n");
+            unsigned short current = *(unsigned short*)val;
+            while (ptr != (char*)last) {
+                memcpy(ptr, &current, size);
+                current += 1;
+                ptr += size;
+            }
+            break;
+        }
+        default: {
+            ALGORITHM_LOG("Unsupported type.\n");
+            break;
+        }
+    }
 }
